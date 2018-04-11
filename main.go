@@ -12,7 +12,7 @@ import (
 
 func main() {
 	count := 1000
-	conn, err := amqp.Dial("amqp://user:user@server.lxc:5672/password")
+	conn, err := amqp.Dial("amqp://user:password@server.lxc:5672/exchange")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
