@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	count := 1000
-	conn, err := amqp.Dial("amqp://audit:audit@rabbitmq.lxc:5672/events")
+	count := 100000
+	conn, err := amqp.Dial("amqp://audit:audit@rabbitmq.lxc:5672/audit")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -51,7 +51,7 @@ func failOnError(err error, msg string) {
 
 func generateEvent() ([]byte, error) {
 	uuid1, _ := uuid.NewRandom()
-	uuid2, _ := uuid.Parse("1234abcd-022d-4db9-a2d1-a964fa1353e5")
+	uuid2, _ := uuid.Parse("7234abcd-022d-4db9-a2d1-a964fa1353e5")
 	actor := model.Actor{
 		ActorType: "user",
 		Data:      json.RawMessage(`{"id": "1234abcd-022d-4db9-a2d1-a964fa1353e5"}`),
