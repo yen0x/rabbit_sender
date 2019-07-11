@@ -7,6 +7,7 @@ import (
 	"github.com/streadway/amqp"
 	"github.com/yen0x/events_perf/model"
 	"log"
+	"math/rand"
 	"time"
 )
 
@@ -26,10 +27,10 @@ func main() {
 		failOnError(err, "Failed to serialize event")
 
 		err = ch.Publish(
-			"events", // exchange
-			"",       // routing key
-			false,    // mandatory
-			false,    // immediate
+			"events",            // exchange
+			"test.user.created", // routing key
+			false,               // mandatory
+			false,               // immediate
 			amqp.Publishing{
 				ContentType: "text/plain",
 				Body:        body,
@@ -51,16 +52,21 @@ func failOnError(err error, msg string) {
 
 func generateEvent() ([]byte, error) {
 	uuid1, _ := uuid.NewRandom()
-	uuid2, _ := uuid.Parse("7234abcd-022d-4db9-a2d1-a964fa1353e5")
+	uuid2, _ := uuid.Parse("1234abcd-022d-4db9-a2d1-a964fa1353e5")
+	uuid3, _ := uuid.Parse("7234abcd-022d-4db9-a2d1-a964fa1353e5")
+	clientIds := []uuid.UUID{uuid1, uuid2, uuid3}
+	index := rand.Intn(2)
+
+	clientId := clientIds[index]
 	actor := model.Actor{
 		ActorType: "user",
 		Data:      json.RawMessage(`{"id": "1234abcd-022d-4db9-a2d1-a964fa1353e5"}`),
 	}
 	event := model.Event{
 		EventId:     uuid1,
-		Type:        "user.created",
+		Type:        "employee.created",
 		Actor:       actor,
-		ClientId:    uuid2,
+		ClientId:    clientId,
 		Application: "rh2",
 		CreatedAt:   time.Now().Format(time.RFC3339),
 		Data:        json.RawMessage(`{}`),
